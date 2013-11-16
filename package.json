@@ -1,28 +1,32 @@
 {
-    "name": "parse-migrate",
-    "description": "Parse database migration framework",
-    "author": "Mark Ferlatte <mark@tetherpad.com>",
-    "bin": "./bin/parse-migrate",
-    "keywords": [
-        "Parse",
-        "database",
-        "migration"
-    ],
-    "version": "0.0.1",
-    "bugs": {
-        "url": "https://example.com"
-    },
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ferlatte/parse-migrate.git"
-    },
-    "dependencies": {
-        "parse": "git+https://github.com/ferlatte/parse-javascript.git#1.2.12"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.7.1",
-        "matchdep": "~0.1.1"
-    }
+  "name": "parse-migrate",
+  "description": "Parse database migration framework",
+  "author": "Mark Ferlatte <mark@tetherpad.com>",
+  "bin": "./bin/parse-migrate",
+  "keywords": [
+    "Parse",
+    "database",
+    "migration"
+  ],
+  "version": "0.0.1",
+  "bugs": {
+    "url": "https://example.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferlatte/parse-migrate.git"
+  },
+  "dependencies": {
+    "parse": "git+https://github.com/ferlatte/parse-javascript.git#1.2.12",
+    "optimist": "~0.6.0",
+    "pkginfo": "~0.3.0",
+    "mkdirp": "~0.3.5",
+    "moment": "~2.4.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "matchdep": "~0.1.1"
+  }
 }

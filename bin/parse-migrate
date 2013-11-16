@@ -1,3 +1,76 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
+/* global module,process,require */
 
-console.log("Hello, world!");
+var assert = require('assert');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+var optimist = require('optimist');
+var pkginfo = require('pkginfo')(module, 'version');
+
+var Migration = require('../lib/migration');
+
+process.on('uncaughtException', function(err) {
+    console.log(err.stack);
+    process.exit(1);
+});
+
+var argv = optimist.default({
+    verbose: false,
+    config: process.cwd() + '/parse/config/global.json',
+    'migrations-dir': process.cwd() + '/parse-migrations'
+}).usage('Usage: parse-migrate [up|create] migrationName [options]')
+.describe('verbose', 'verbose mode')
+.alias('v', 'verbose')
+.boolean('verbose')
+.describe('config', 'location of the parse configuration file')
+.alias('c', 'config')
+.string('config')
+.describe('help', 'print help')
+.alias('h', 'help')
+.boolean('help')
+.describe('version', 'print version')
+.boolean('version')
+.argv;
+
+function createMigration(migrationDir, migrationName) {
+    assert(migrationDir);
+    assert(migrationName);
+    mkdirp.sync(migrationDir);
+    Migration.setMigrationDir(migrationDir);
+    var migration = new Migration(migrationName, new Date());
+    migration.write();
+}
+
+function runMigrations() {
+
+}
+
+function run() {
+    if (argv.version) {
+        console.log(module.exports.version);
+        process.exit(0);
+    }
+
+    if (argv.help || argv._.length === 0) {
+        optimist.showHelp();
+        process.exit(0);
+    }
+    var action = argv._.shift();
+    switch(action) {
+    case 'create':
+        var migrationDir = argv['migrations-dir'];
+        var migrationName = argv._.shift();
+        createMigration(migrationDir, migrationName);
+        break;
+    case 'up':
+        runMigrations();
+        break;
+    default:
+        console.error('action must be [create|up]');
+        optimist.showHelp();
+        process.exit(1);
+        break;
+    }
+}
+
+run();
