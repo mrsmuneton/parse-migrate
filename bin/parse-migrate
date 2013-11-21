@@ -6,13 +6,10 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var optimist = require('optimist');
 var pkginfo = require('pkginfo')(module, 'version');
+var Parse = require('parse').Parse;
 
 var Migration = require('../lib/migration');
-
-process.on('uncaughtException', function(err) {
-    console.log(err.stack);
-    process.exit(1);
-});
+var Migrator = require('../lib/migrator');
 
 var argv = optimist.default({
     verbose: false,
@@ -41,8 +38,19 @@ function createMigration(migrationDir, migrationName) {
     migration.write();
 }
 
-function runMigrations() {
+function runMigrations(migrationDir) {
+    Migrator.setMigrationDir(migrationDir);
+    var migrator = new Migrator();
+    migrator.up();
+}
 
+function configure(configFile) {
+    var json = JSON.parse(fs.readFileSync(configFile));
+    var applicationName = json['applications']['_default']['link'];
+    var applicationId = json['applications'][applicationName]['applicationId'];
+    var masterKey = json['applications'][applicationName]['masterKey'];
+    Parse.initialize(applicationId, '', masterKey);
+    Parse.Cloud.useMasterKey();
 }
 
 function run() {
@@ -56,14 +64,15 @@ function run() {
         process.exit(0);
     }
     var action = argv._.shift();
+    var migrationDir = argv['migrations-dir'];
+    configure(argv.config);
     switch(action) {
     case 'create':
-        var migrationDir = argv['migrations-dir'];
         var migrationName = argv._.shift();
         createMigration(migrationDir, migrationName);
         break;
     case 'up':
-        runMigrations();
+        runMigrations(migrationDir);
         break;
     default:
         console.error('action must be [create|up]');
