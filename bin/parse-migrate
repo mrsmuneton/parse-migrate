@@ -70,6 +70,10 @@ function run() {
     switch(action) {
     case 'create':
         var migrationName = argv._.shift();
+        if (! migrationName) {
+            console.error('create requires a migrationName');
+            process.exit(1);
+        }
         createMigration(migrationDir, migrationName);
         break;
     case 'up':
