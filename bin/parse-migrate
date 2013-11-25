@@ -35,6 +35,7 @@ function createMigration(migrationDir, migrationName) {
     mkdirp.sync(migrationDir);
     var migration = Migration.withNameAndDate(migrationName, new Date());
     migration.write();
+    console.log('migration created: ' + migration.getPath());
 }
 
 function runMigrations(migrationDir) {
