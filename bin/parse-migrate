@@ -41,7 +41,7 @@ function createMigration(migrationDir, migrationName) {
 function runMigrations(migrationDir) {
     Migrator.setMigrationDir(migrationDir);
     var migrator = new Migrator();
-    migrator.up();
+    return migrator.up();
 }
 
 function configure(configFile) {
@@ -73,7 +73,15 @@ function run() {
         createMigration(migrationDir, migrationName);
         break;
     case 'up':
-        runMigrations(migrationDir);
+        runMigrations(migrationDir).then(
+            function() {
+                process.exit(0);
+            },
+            function(error) {
+                console.error('error: ' + error.message);
+                process.exit(1);
+            }
+        );
         break;
     default:
         console.error('action must be [create|up]');
